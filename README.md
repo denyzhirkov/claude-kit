@@ -1,34 +1,34 @@
 # claude-kit
 
-Мой сетап Claude Code для работы в режиме оркестратора (субагенты scout / implementer / reviewer / expert) — версия без tsk и kungfu MCP.
+My Claude Code setup for orchestrator mode (scout / implementer / reviewer / expert subagents) — a version that works without the tsk and kungfu MCP servers.
 
-## Состав
+## Contents
 
-- `CLAUDE.md` — глобальные правила: принципы, порог «тривиально / средне / крупно», делегирование.
-- `agents/` — субагенты:
-  - `scout` (haiku) — поиск по коду, read-only;
-  - `implementer` (sonnet) — одна подзадача по брифу;
-  - `reviewer` (opus) — read-only ревью, `APPROVE` / `CHANGES_REQUESTED`;
-  - `expert` (fable) — эскалация после 2 неудачных раундов ревью.
-- `skills/orchestrate/SKILL.md` — цикл план → волны → ревью → закрытие + шаблон брифа.
-- `install.sh` — копирует всё в `~/.claude/` (старые файлы → `*.bak`), прописывает `model` и `effortLevel` в `settings.json` (нужен `jq`).
+- `CLAUDE.md` — global rules: principles, the trivial / medium / large threshold, delegation.
+- `agents/` — subagents:
+  - `scout` (haiku) — codebase search, read-only;
+  - `implementer` (sonnet) — one subtask per brief;
+  - `reviewer` (opus) — read-only review, `APPROVE` / `CHANGES_REQUESTED`;
+  - `expert` (fable) — escalation after 2 failed review rounds.
+- `skills/orchestrate/SKILL.md` — plan → waves → review → close loop, plus the brief template.
+- `install.sh` — copies everything into `~/.claude/` (existing files → `*.bak`), sets `model` and `effortLevel` in `settings.json` (requires `jq`).
 
-## Установка
+## Install
 
 ```bash
 git clone https://github.com/denyzhirkov/claude-kit.git
 cd claude-kit && ./install.sh
 ```
 
-Перезапустить Claude Code, проверить `/agents` — должны появиться 4 агента.
+Restart Claude Code and check `/agents` — the 4 agents should be listed.
 
-## После установки
+## After install
 
-- Если на аккаунте нет `fable` → в `~/.claude/agents/expert.md` поставить `model: opus`.
-- Если доступен 1M-контекст → в `~/.claude/settings.json` `"model": "opus[1m]"`.
-- В `CLAUDE.md` каждого проекта прописать команду тестов — её берут implementer и reviewer.
-- Параллельные implementer'ы работают в git worktree → проект должен быть git-репозиторием.
+- No `fable` on the account → set `model: opus` in `~/.claude/agents/expert.md`.
+- 1M context available → set `"model": "opus[1m]"` in `~/.claude/settings.json`.
+- Put the test command in each project's `CLAUDE.md` — implementer and reviewer rely on it.
+- Parallel implementers run in git worktrees → the project must be a git repository.
 
-## Использование
+## Usage
 
-Для задачи крупнее тривиальной: «сделай X через /orchestrate» или просто описать задачу — правила из `CLAUDE.md` сами включат режим оркестратора. План пишется в `.claude/plans/<slug>.md` проекта.
+For anything above trivial: "do X via /orchestrate", or just describe the task — the rules in `CLAUDE.md` switch to orchestrator mode on their own. The plan is written to `.claude/plans/<slug>.md` in the project.
